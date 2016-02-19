@@ -1,6 +1,10 @@
 package com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model;
 
 
+import android.database.Cursor;
+
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.constants.DatabaseConstants;
+
 /**
  * Model for a staff.
  */
@@ -26,6 +30,19 @@ public class Staff {
         this.mStatus = mStatus;
         this.mPosition = mPosition;
         this.mDepartmentId = mDepartmentId;
+    }
+
+    public Staff(Cursor cursor) {
+        this.mId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_ID));
+        this.mName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_NAME));
+        this.mPlaceOfBirth = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_POB));
+        this.mBirthday = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_BIRTHDAY));
+        this.mPhoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_PHONE));
+        this.mDepartmentId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_DEPARTMENT));
+        this.mStatus = Status.getStatusFromCode(
+                cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_STATUS)));
+        this.mPosition = Position.getPositionFromCode(
+                cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_POSITION)));
     }
 
     public int getId() {
