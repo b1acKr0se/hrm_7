@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Human Resource Management System</string>
+    <string name="app_name">HR Management System</string>
+    <string name="btn_search">Search</string>
 </resources>
