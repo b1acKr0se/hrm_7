@@ -50,7 +50,6 @@ public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
         if (parent.getChildPosition(view) < 1) {
             return;
         }
-
         if (getOrientation(parent) == LinearLayoutManager.VERTICAL) {
             outRect.top = mDivider.getIntrinsicHeight();
         } else {
