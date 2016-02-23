@@ -10,6 +10,7 @@ import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.R;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.local.StaffDao;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Staff;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.adapter.StaffAdapter;
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.dialog.StaffDetailDialog;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnLoadMoreListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnStaffClickListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.widget.SimpleDividerItemDecoration;
@@ -25,6 +26,7 @@ public class StaffActivity extends BaseActivity implements OnStaffClickListener,
     private List<Staff> mStaffList = new ArrayList<>();
     private StaffDao mStaffDao = new StaffDao(this);
     private int mDepartmentId;
+    private String mDepartmentName;
     private int mOffset = 0; //for pagination of sql result
 
     @Override
@@ -59,14 +61,14 @@ public class StaffActivity extends BaseActivity implements OnStaffClickListener,
 
     @Override
     public void onStaffClick(Staff staff) {
-
+        showStaffInfo(staff);
     }
 
     private void retrieveIntent() {
         Intent intent = getIntent();
         mDepartmentId = intent.getIntExtra(MainActivity.EXTRA_DEPARTMENT_ID, INVALID_ID);
-        String departmentName = intent.getStringExtra(MainActivity.EXTRA_DEPARTMENT_NAME);
-        setTitle(departmentName);
+        mDepartmentName = intent.getStringExtra(MainActivity.EXTRA_DEPARTMENT_NAME);
+        setTitle(mDepartmentName);
         if (mDepartmentId != INVALID_ID) {
             loadStaff();
         }
@@ -107,5 +109,10 @@ public class StaffActivity extends BaseActivity implements OnStaffClickListener,
         int size = staffList.size();
         mStaffList.addAll(staffList);
         mStaffAdapter.notifyItemRangeInserted(startPosition, size);
+    }
+
+    private void showStaffInfo(Staff staff) {
+        StaffDetailDialog dialog = new StaffDetailDialog(this, staff, mDepartmentName);
+        dialog.show();
     }
 }

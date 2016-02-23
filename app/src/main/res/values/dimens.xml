@@ -6,4 +6,6 @@
     <dimen name="default_padding_8dp">8dp</dimen>
     <dimen name="item_name_20sp">20sp</dimen>
     <dimen name="item_progress_size">40dp</dimen>
+    <dimen name="label_text_size">12sp</dimen>
+    <dimen name="dialog_width">300dp</dimen>
 </resources>

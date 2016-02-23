@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">HR Management System</string>
     <string name="btn_search">Search</string>
+    <string name="label_name">Name</string>
+    <string name="label_birthday">Date of birth</string>
+    <string name="label_place_of_birth">Place of birth</string>
+    <string name="label_phone">Phone number</string>
+    <string name="label_department">Department</string>
+    <string name="label_status">Status</string>
+    <string name="label_position">Position</string>
+    <string name="btn_ok">OK</string>
 </resources>

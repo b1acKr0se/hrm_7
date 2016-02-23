@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dialog_width"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:paddingTop="@dimen/default_padding_8dp"
+        android:text="@string/label_name"
+        android:textSize="@dimen/label_text_size" />
+
+    <TextView
+        android:id="@+id/text_staff_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:paddingTop="@dimen/default_padding_8dp"
+        android:text="@string/label_birthday"
+        android:textSize="@dimen/label_text_size" />
+
+    <TextView
+        android:id="@+id/text_staff_birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:paddingTop="@dimen/default_padding_8dp"
+        android:text="@string/label_place_of_birth"
+        android:textSize="@dimen/label_text_size" />
+
+    <TextView
+        android:id="@+id/text_staff_pob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:paddingTop="@dimen/default_padding_8dp"
+        android:text="@string/label_phone"
+        android:textSize="@dimen/label_text_size" />
+
+    <TextView
+        android:id="@+id/text_staff_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:paddingTop="@dimen/default_padding_8dp"
+        android:text="@string/label_department"
+        android:textSize="@dimen/label_text_size" />
+
+    <TextView
+        android:id="@+id/text_staff_department"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:paddingTop="@dimen/default_padding_8dp"
+        android:text="@string/label_position"
+        android:textSize="@dimen/label_text_size" />
+
+    <TextView
+        android:id="@+id/text_staff_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:paddingTop="@dimen/default_padding_8dp"
+        android:text="@string/label_status"
+        android:textSize="@dimen/label_text_size" />
+
+    <TextView
+        android:id="@+id/text_staff_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/default_padding_8dp"
+        android:paddingStart="@dimen/default_padding_8dp"
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/btn_ok"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="@dimen/default_padding_8dp"
+        android:text="@string/btn_ok" />
+
+</LinearLayout>
