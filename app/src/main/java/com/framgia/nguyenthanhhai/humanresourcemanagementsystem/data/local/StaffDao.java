@@ -57,12 +57,13 @@ public class StaffDao extends DbContentProvider {
         return null;
     }
 
-    public List<Staff> getStaffList(int departmentId) {
+    public List<Staff> getStaffList(int departmentId, int offset) {
         List<Staff> list = new ArrayList<>();
         String selection = DatabaseConstants.STAFF_DEPARTMENT + " = ?";
         String[] selectionArgs = {String.valueOf(departmentId)};
+        String paginationQuery =  "order by id asc limit 30 offset " + offset;
         Cursor cursor = database.query(DatabaseConstants.TABLE_STAFF,
-                null, selection, selectionArgs, null, null, null, null);
+                null, selection, selectionArgs, null, null, null, paginationQuery);
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 list.add(new Staff(cursor));
