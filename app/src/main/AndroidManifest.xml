@@ -15,7 +15,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.StaffActivity"/>
+        <activity android:name=".ui.activity.StaffActivity" />
+        <activity android:name=".ui.activity.EditActivity" />
     </application>
 
 </manifest>

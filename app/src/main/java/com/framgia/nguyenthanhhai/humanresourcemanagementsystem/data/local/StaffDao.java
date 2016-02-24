@@ -43,6 +43,20 @@ public class StaffDao extends DbContentProvider {
         return true;
     }
 
+    public boolean updateStaff(int id, Staff staff) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseConstants.COLUMN_NAME, staff.getName());
+        contentValues.put(DatabaseConstants.STAFF_POB, staff.getPlaceOfBirth());
+        contentValues.put(DatabaseConstants.STAFF_BIRTHDAY, staff.getBirthday());
+        contentValues.put(DatabaseConstants.STAFF_DEPARTMENT, staff.getDepartmentId());
+        contentValues.put(DatabaseConstants.STAFF_PHONE, staff.getPhoneNumber());
+        contentValues.put(DatabaseConstants.STAFF_POSITION, Position.getCodeFromPosition(staff.getPosition()));
+        contentValues.put(DatabaseConstants.STAFF_STATUS, Status.getCodeFromStatus(staff.getStatus()));
+        int rowsAffected = database.update(DatabaseConstants.TABLE_STAFF, contentValues
+                , DatabaseConstants.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        return rowsAffected > 0;
+    }
+
     public Staff getStaff(int id) {
         String selection = DatabaseConstants.COLUMN_ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};

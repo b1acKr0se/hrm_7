@@ -2,14 +2,15 @@ package com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model;
 
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.constants.DatabaseConstants;
 
 /**
  * Model for a staff.
  */
-public class Staff {
-
+public class Staff implements Parcelable {
     private int mId;
     private String mName;
     private String mPlaceOfBirth;
@@ -18,6 +19,10 @@ public class Staff {
     private Status mStatus;
     private Position mPosition;
     private int mDepartmentId;
+
+    public Staff() {
+
+    }
 
     public Staff(int mId, String mName, String mPlaceOfBirth,
                  String mBirthday, String mPhoneNumber,
@@ -108,4 +113,45 @@ public class Staff {
     public void setDepartmentId(int mDepartmentId) {
         this.mDepartmentId = mDepartmentId;
     }
+
+    protected Staff(Parcel in) {
+        mId = in.readInt();
+        mName = in.readString();
+        mPlaceOfBirth = in.readString();
+        mBirthday = in.readString();
+        mPhoneNumber = in.readString();
+        mStatus = (Status) in.readValue(Status.class.getClassLoader());
+        mPosition = (Position) in.readValue(Position.class.getClassLoader());
+        mDepartmentId = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeString(mName);
+        dest.writeString(mPlaceOfBirth);
+        dest.writeString(mBirthday);
+        dest.writeString(mPhoneNumber);
+        dest.writeValue(mStatus);
+        dest.writeValue(mPosition);
+        dest.writeInt(mDepartmentId);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Staff> CREATOR = new Parcelable.Creator<Staff>() {
+        @Override
+        public Staff createFromParcel(Parcel in) {
+            return new Staff(in);
+        }
+
+        @Override
+        public Staff[] newArray(int size) {
+            return new Staff[size];
+        }
+    };
 }

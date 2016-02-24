@@ -1,5 +1,6 @@
 package com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,12 +14,17 @@ import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.adapter.Staff
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.dialog.StaffDetailDialog;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnLoadMoreListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnStaffClickListener;
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnStaffLongClickListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.widget.SimpleDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaffActivity extends BaseActivity implements OnStaffClickListener, OnLoadMoreListener {
+public class StaffActivity extends BaseActivity
+        implements OnStaffClickListener, OnStaffLongClickListener, OnLoadMoreListener {
+    static final String EXTRA_STAFF = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_STAFF";
+    static final String EXTRA_DEPARTMENT_NAME = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_DEPARTMENT_NAME";
+    static final int EDIT_STAFF_REQUEST = 1;
     public static final int INVALID_ID = -1;
     private Toolbar mToolbar;
     private RecyclerView mStaffRecyclerView;
@@ -28,6 +34,8 @@ public class StaffActivity extends BaseActivity implements OnStaffClickListener,
     private int mDepartmentId;
     private String mDepartmentName;
     private int mOffset = 0; //for pagination of sql result
+    private int mIsBeingEditedIndex; //stores the index of the staff that is being
+                                    // edited so we can update it later
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +55,9 @@ public class StaffActivity extends BaseActivity implements OnStaffClickListener,
         mStaffRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mStaffRecyclerView.addItemDecoration(
                 new SimpleDividerItemDecoration(this, null));
-        mStaffAdapter = new StaffAdapter(this, mStaffList, this, mStaffRecyclerView);
+        mStaffAdapter = new StaffAdapter(this, mStaffList, mStaffRecyclerView);
+        mStaffAdapter.setOnStaffClickListener(this);
+        mStaffAdapter.setOnStaffLongClickListener(this);
         mStaffAdapter.setOnLoadMoreListener(this);
         mStaffRecyclerView.setAdapter(mStaffAdapter);
     }
@@ -62,6 +72,29 @@ public class StaffActivity extends BaseActivity implements OnStaffClickListener,
     @Override
     public void onStaffClick(Staff staff) {
         showStaffInfo(staff);
+    }
+
+    @Override
+    public void onStaffLongClick(Staff staff) {
+        mIsBeingEditedIndex = mStaffList.indexOf(staff);
+        startActivityForResult(getEditIntent(this, staff), EDIT_STAFF_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != EDIT_STAFF_REQUEST) {
+            return;
+        }
+        if (resultCode == RESULT_OK) {
+            Staff staff = data.getParcelableExtra(EXTRA_STAFF);
+            if(mStaffDao.updateStaff(staff.getId(), staff)) {
+                mStaffList.set(mIsBeingEditedIndex, staff);
+                mStaffAdapter.notifyItemChanged(mIsBeingEditedIndex+1); //since adapter index starts at 1
+            } else {
+                showError(getString(R.string.error_insert_staff));
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void retrieveIntent() {
@@ -114,5 +147,11 @@ public class StaffActivity extends BaseActivity implements OnStaffClickListener,
     private void showStaffInfo(Staff staff) {
         StaffDetailDialog dialog = new StaffDetailDialog(this, staff, mDepartmentName);
         dialog.show();
+    }
+
+    public static Intent getEditIntent(Context context, Staff staff) {
+        Intent intent = new Intent(context, EditActivity.class);
+        intent.putExtra(EXTRA_STAFF, staff);
+        return intent;
     }
 }
