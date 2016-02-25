@@ -17,5 +17,7 @@
     <string name="change_department">Choose department</string>
     <string name="btn_apply">Apply changes</string>
     <string name="error_empty_field">Please input in all the fields!</string>
-    <string name="error_insert_staff">An error has occured while trying to update staff details!</string>
+    <string name="error_update_staff">An error has occured while trying to update staff details!</string>
+    <string name="successful_add_staff">New staff has been succesfully added!</string>
+    <string name="error_insert_staff">An error has occured while trying to add new staff!</string>
 </resources>

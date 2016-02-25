@@ -40,7 +40,6 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
     private DepartmentDao mDepartmentDao = new DepartmentDao(this);
     private Staff mStaff;
     private Department mDepartment = null;
-    private String mDepartmentName;
     private boolean mIsFromStaffActivity; //As the edit and new staff function share the
     //same activity in their startActivityForResult,
     //this boolean is to return the appropriate object
@@ -100,9 +99,15 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
     private void getStaffFromIntent() {
         Intent intent = getIntent();
         mStaff = intent.getParcelableExtra(StaffActivity.EXTRA_STAFF);
-        mDepartmentName = intent.getStringExtra(StaffActivity.EXTRA_DEPARTMENT_NAME);
-        if (mStaff != null && mDepartmentName != null && mDepartmentName.isEmpty()) {
+        // check if the parent activity wants to edit or add new staff
+        // if there is a staff object attached with the intent, show the current details of that staff
+        if (mStaff != null) {
             mIsFromStaffActivity = true;
+            String departmentName = intent.getStringExtra(StaffActivity.EXTRA_DEPARTMENT_NAME);
+            int departmentId = intent.getIntExtra(StaffActivity.EXTRA_DEPARTMENT_ID, INVALID_ID);
+            if (departmentId != INVALID_ID) {
+                mDepartment = new Department(departmentId, departmentName);
+            }
             showCurrentStaffDetail();
         }
         mIsFromStaffActivity = false;
@@ -113,7 +118,7 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
         mBirthdayEditText.setText(mStaff.getBirthday());
         mPlaceOfBirthEditText.setText(mStaff.getPlaceOfBirth());
         mPhoneEditText.setText(mStaff.getPhoneNumber());
-        mDepartmentNameTextView.setText(mDepartmentName);
+        mDepartmentNameTextView.setText(mDepartment.getName());
         mDepartmentNameTextView.setVisibility(View.VISIBLE);
         switch (mStaff.getPosition()) {
             case TRAINEE:
@@ -202,7 +207,7 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
             staff.setStatus(getCheckedStatus());
             returnIntent(staff); //return the result
         } else {
-            showError(getString(R.string.error_empty_field));
+            showMessage(getString(R.string.error_empty_field));
         }
     }
 

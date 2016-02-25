@@ -23,6 +23,7 @@ import java.util.List;
 public class StaffActivity extends BaseActivity
         implements OnStaffClickListener, OnStaffLongClickListener, OnLoadMoreListener {
     static final String EXTRA_STAFF = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_STAFF";
+    static final String EXTRA_DEPARTMENT_ID = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_DEPARTMENT_ID";
     static final String EXTRA_DEPARTMENT_NAME = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_DEPARTMENT_NAME";
     static final int EDIT_STAFF_REQUEST = 1;
     public static final int INVALID_ID = -1;
@@ -30,12 +31,12 @@ public class StaffActivity extends BaseActivity
     private RecyclerView mStaffRecyclerView;
     private StaffAdapter mStaffAdapter;
     private List<Staff> mStaffList = new ArrayList<>();
-    private StaffDao mStaffDao = new StaffDao(this);
-    private int mDepartmentId;
-    private String mDepartmentName;
+    private StaffDao mStaffDao;
+    private static int mDepartmentId;
+    private static String mDepartmentName;
     private int mOffset = 0; //for pagination of sql result
     private int mIsBeingEditedIndex; //stores the index of the staff that is being
-                                    // edited so we can update it later
+    // edited so we can update it later
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class StaffActivity extends BaseActivity
         mStaffAdapter.setOnStaffLongClickListener(this);
         mStaffAdapter.setOnLoadMoreListener(this);
         mStaffRecyclerView.setAdapter(mStaffAdapter);
+        mStaffDao = new StaffDao(this);
     }
 
     @Override
@@ -82,17 +84,17 @@ public class StaffActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != EDIT_STAFF_REQUEST) {
-            return;
-        }
         if (resultCode == RESULT_OK) {
-            Staff staff = data.getParcelableExtra(EXTRA_STAFF);
-            if(mStaffDao.updateStaff(staff.getId(), staff)) {
-                mStaffList.set(mIsBeingEditedIndex, staff);
-                mStaffAdapter.notifyItemChanged(mIsBeingEditedIndex+1); //since adapter index starts at 1
-            } else {
-                showError(getString(R.string.error_insert_staff));
+            if (requestCode != EDIT_STAFF_REQUEST) {
+                return;
             }
+            Staff staff = data.getParcelableExtra(EXTRA_STAFF);
+            if (mStaffDao.updateStaff(staff.getId(), staff)) {
+                mStaffList.set(mIsBeingEditedIndex, staff);
+                mStaffAdapter.notifyItemChanged(mIsBeingEditedIndex + 1); //since adapter index starts at 1
+            }
+        } else {
+            showMessage(getString(R.string.error_update_staff));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -129,6 +131,8 @@ public class StaffActivity extends BaseActivity
             mOffset += 30; //increase page
             showMoreStaff(staffList);
         } else {
+            mStaffList.remove(mStaffList.size() - 1);
+            mStaffAdapter.notifyItemRemoved(mStaffList.size()); //remove progress bar
             //There's probably no staff remaining to be fetched so better remove the pagination listener
             mStaffAdapter.removePagination(mStaffRecyclerView);
         }
@@ -152,6 +156,8 @@ public class StaffActivity extends BaseActivity
     public static Intent getEditIntent(Context context, Staff staff) {
         Intent intent = new Intent(context, EditActivity.class);
         intent.putExtra(EXTRA_STAFF, staff);
+        intent.putExtra(EXTRA_DEPARTMENT_ID, mDepartmentId);
+        intent.putExtra(EXTRA_DEPARTMENT_NAME, mDepartmentName);
         return intent;
     }
 }

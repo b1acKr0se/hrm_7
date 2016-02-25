@@ -12,7 +12,9 @@ import android.view.View;
 
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.R;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.local.DepartmentDao;
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.local.StaffDao;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Department;
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Staff;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.adapter.DepartmentAdapter;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnDepartmentClickListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.widget.SimpleDividerItemDecoration;
@@ -23,16 +25,20 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements View.OnClickListener, OnDepartmentClickListener {
     static final String EXTRA_DEPARTMENT_ID = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.MainActivity.EXTRA_DEPARTMENT_ID";
     static final String EXTRA_DEPARTMENT_NAME = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.MainActivity.EXTRA_DEPARTMENT_NAME";
+    static final String EXTRA_STAFF = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_STAFF";
+    static final int ADD_STAFF_REQUEST = 2;
     private Toolbar mToolbar;
     private RecyclerView mDepartmentRecyclerView;
     private FloatingActionButton mAddButton;
     private DepartmentAdapter mDepartmentAdapter;
     private List<Department> mDepartmentList = new ArrayList<>();
+    private StaffDao mStaffDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mStaffDao = new StaffDao(this);
         bindViews();
     }
 
@@ -49,9 +55,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode != ADD_STAFF_REQUEST) {
+                return;
+            }
+            Staff staff = data.getParcelableExtra(EXTRA_STAFF);
+            if (mStaffDao.insertStaff(staff)) {
+                showMessage(getString(R.string.successful_add_staff));
+            }
+        } else {
+            showMessage(getString(R.string.error_insert_staff));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.floating_button_add:
+                startActivityForResult(getAddIntent(this), ADD_STAFF_REQUEST);
                 break;
         }
     }
@@ -93,5 +116,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         intent.putExtra(EXTRA_DEPARTMENT_ID, department.getId());
         intent.putExtra(EXTRA_DEPARTMENT_NAME, department.getName());
         return intent;
+    }
+
+    public static Intent getAddIntent(Context context) {
+        return new Intent(context, EditActivity.class);
     }
 }

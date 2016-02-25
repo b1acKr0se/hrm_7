@@ -18,7 +18,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public void showError(String error) {
+    public void showMessage(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
