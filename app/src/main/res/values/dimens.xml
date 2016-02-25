@@ -9,4 +9,6 @@
     <dimen name="item_progress_size">40dp</dimen>
     <dimen name="label_text_size">12sp</dimen>
     <dimen name="clickable_text_size">18sp</dimen>
+    <dimen name="dialog_width">300dp</dimen>
+    <dimen name="result_size">50dp</dimen>
 </resources>

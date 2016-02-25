@@ -12,16 +12,16 @@ import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.local.Staff
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Staff;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.adapter.StaffAdapter;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.dialog.StaffDetailDialog;
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnEditClickListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnLoadMoreListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnStaffClickListener;
-import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnStaffLongClickListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.widget.SimpleDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StaffActivity extends BaseActivity
-        implements OnStaffClickListener, OnStaffLongClickListener, OnLoadMoreListener {
+        implements OnStaffClickListener, OnLoadMoreListener, OnEditClickListener {
     static final String EXTRA_STAFF = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_STAFF";
     static final String EXTRA_DEPARTMENT_ID = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_DEPARTMENT_ID";
     static final String EXTRA_DEPARTMENT_NAME = "com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.activity.EXTRA_DEPARTMENT_NAME";
@@ -42,6 +42,7 @@ public class StaffActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff);
+        mStaffDao = new StaffDao(this);
         bindViews();
         retrieveIntent();
     }
@@ -58,10 +59,8 @@ public class StaffActivity extends BaseActivity
                 new SimpleDividerItemDecoration(this, null));
         mStaffAdapter = new StaffAdapter(this, mStaffList, mStaffRecyclerView);
         mStaffAdapter.setOnStaffClickListener(this);
-        mStaffAdapter.setOnStaffLongClickListener(this);
         mStaffAdapter.setOnLoadMoreListener(this);
         mStaffRecyclerView.setAdapter(mStaffAdapter);
-        mStaffDao = new StaffDao(this);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class StaffActivity extends BaseActivity
     }
 
     @Override
-    public void onStaffLongClick(Staff staff) {
+    public void onEditClick(Staff staff) {
         mIsBeingEditedIndex = mStaffList.indexOf(staff);
         startActivityForResult(getEditIntent(this, staff), EDIT_STAFF_REQUEST);
     }
@@ -90,11 +89,14 @@ public class StaffActivity extends BaseActivity
             }
             Staff staff = data.getParcelableExtra(EXTRA_STAFF);
             if (mStaffDao.updateStaff(staff.getId(), staff)) {
-                mStaffList.set(mIsBeingEditedIndex, staff);
-                mStaffAdapter.notifyItemChanged(mIsBeingEditedIndex + 1); //since adapter index starts at 1
+                if (mStaffList.get(mIsBeingEditedIndex).getDepartmentId() != staff.getDepartmentId()) {
+                    mStaffList.remove(mIsBeingEditedIndex);
+                    mStaffAdapter.notifyItemRemoved(mIsBeingEditedIndex);
+                } else {
+                    mStaffList.set(mIsBeingEditedIndex, staff);
+                    mStaffAdapter.notifyItemChanged(mIsBeingEditedIndex);
+                }
             }
-        } else {
-            showMessage(getString(R.string.error_update_staff));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -124,23 +126,18 @@ public class StaffActivity extends BaseActivity
     }
 
     private void loadMoreStaff() {
-        mStaffList.add(null); //dummy object to show progress bar
-        mStaffAdapter.notifyItemInserted(mStaffList.size() - 1); //show progress bar
         List<Staff> staffList = mStaffDao.getStaffList(mDepartmentId, mOffset);
         if (staffList != null) {
             mOffset += 30; //increase page
             showMoreStaff(staffList);
         } else {
-            mStaffList.remove(mStaffList.size() - 1);
-            mStaffAdapter.notifyItemRemoved(mStaffList.size()); //remove progress bar
             //There's probably no staff remaining to be fetched so better remove the pagination listener
+            mStaffAdapter.setLoaded();
             mStaffAdapter.removePagination(mStaffRecyclerView);
         }
     }
 
     private void showMoreStaff(List<Staff> staffList) {
-        mStaffList.remove(mStaffList.size() - 1);
-        mStaffAdapter.notifyItemRemoved(mStaffList.size()); //remove progress bar
         mStaffAdapter.setLoaded();
         int startPosition = mStaffList.size() + 1;
         int size = staffList.size();
@@ -149,7 +146,9 @@ public class StaffActivity extends BaseActivity
     }
 
     private void showStaffInfo(Staff staff) {
+        mDepartmentId = staff.getDepartmentId();
         StaffDetailDialog dialog = new StaffDetailDialog(this, staff, mDepartmentName);
+        dialog.setOnEditListener(this);
         dialog.show();
     }
 

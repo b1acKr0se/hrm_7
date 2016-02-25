@@ -14,7 +14,6 @@ import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.R;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Staff;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnLoadMoreListener;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnStaffClickListener;
-import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnStaffLongClickListener;
 
 import java.util.List;
 
@@ -27,7 +26,6 @@ public class StaffAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<Staff> mStaffList;
     private OnStaffClickListener mOnStaffClickListener;
-    private OnStaffLongClickListener mOnstaffLongClickListener;
     private OnLoadMoreListener mOnLoadMoreListener;
     private int mVisibleThreshold = 5;
     private int mLastVisibleItem, mTotalItemCount;
@@ -47,10 +45,6 @@ public class StaffAdapter extends RecyclerView.Adapter {
 
     public void setOnStaffClickListener(OnStaffClickListener onStaffClickListener) {
         this.mOnStaffClickListener = onStaffClickListener;
-    }
-
-    public void setOnStaffLongClickListener(OnStaffLongClickListener onStaffLongClickListener) {
-        this.mOnstaffLongClickListener = onStaffLongClickListener;
     }
 
     @Override
@@ -112,9 +106,9 @@ public class StaffAdapter extends RecyclerView.Adapter {
                     if (!mIsLoading && mTotalItemCount < (mLastVisibleItem + mVisibleThreshold)) {
                         //reach the end
                         if (mOnLoadMoreListener != null) {
+                            mIsLoading = true;
                             mOnLoadMoreListener.onLoadMore();
                         }
-                        mIsLoading = true;
                     }
                 }
             };
@@ -130,7 +124,7 @@ public class StaffAdapter extends RecyclerView.Adapter {
         mIsLoading = false;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public Staff staff;
         private View mStaffBackgroundView;
         private TextView mStaffName;
@@ -146,12 +140,6 @@ public class StaffAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View v) {
             mOnStaffClickListener.onStaffClick(staff);
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            mOnstaffLongClickListener.onStaffLongClick(staff);
-            return true;
         }
     }
 

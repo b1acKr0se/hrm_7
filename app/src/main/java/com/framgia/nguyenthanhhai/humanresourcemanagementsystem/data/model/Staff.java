@@ -24,6 +24,18 @@ public class Staff implements Parcelable {
 
     }
 
+    public Staff(String mName, String mPlaceOfBirth,
+                 String mBirthday, String mPhoneNumber,
+                 Status mStatus, Position mPosition, int mDepartmentId) {
+        this.mName = mName;
+        this.mPlaceOfBirth = mPlaceOfBirth;
+        this.mBirthday = mBirthday;
+        this.mPhoneNumber = mPhoneNumber;
+        this.mStatus = mStatus;
+        this.mPosition = mPosition;
+        this.mDepartmentId = mDepartmentId;
+    }
+
     public Staff(int mId, String mName, String mPlaceOfBirth,
                  String mBirthday, String mPhoneNumber,
                  Status mStatus, Position mPosition, int mDepartmentId) {
@@ -39,7 +51,7 @@ public class Staff implements Parcelable {
 
     public Staff(Cursor cursor) {
         this.mId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_ID));
-        this.mName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_NAME));
+        this.mName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_NAME));
         this.mPlaceOfBirth = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_POB));
         this.mBirthday = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_BIRTHDAY));
         this.mPhoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.STAFF_PHONE));

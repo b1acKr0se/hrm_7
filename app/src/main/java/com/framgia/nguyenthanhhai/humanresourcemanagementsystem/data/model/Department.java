@@ -13,7 +13,7 @@ public class Department {
 
     public Department(Cursor cursor) {
         this.mId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_ID));
-        this.mName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.COLUMN_NAME));
+        this.mName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseConstants.DEPARTMENT_NAME));
     }
 
     public Department(String mName) {

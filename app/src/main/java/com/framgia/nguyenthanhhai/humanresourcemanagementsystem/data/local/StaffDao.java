@@ -4,11 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.util.Log;
 
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.constants.DatabaseConstants;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Position;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Staff;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Status;
-import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.constants.DatabaseConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class StaffDao extends DbContentProvider {
 
     public boolean insertStaff(Staff staff) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseConstants.COLUMN_NAME, staff.getName());
+        contentValues.put(DatabaseConstants.STAFF_NAME, staff.getName());
         contentValues.put(DatabaseConstants.STAFF_POB, staff.getPlaceOfBirth());
         contentValues.put(DatabaseConstants.STAFF_BIRTHDAY, staff.getBirthday());
         contentValues.put(DatabaseConstants.STAFF_DEPARTMENT, staff.getDepartmentId());
@@ -45,7 +46,7 @@ public class StaffDao extends DbContentProvider {
 
     public boolean updateStaff(int id, Staff staff) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseConstants.COLUMN_NAME, staff.getName());
+        contentValues.put(DatabaseConstants.STAFF_NAME, staff.getName());
         contentValues.put(DatabaseConstants.STAFF_POB, staff.getPlaceOfBirth());
         contentValues.put(DatabaseConstants.STAFF_BIRTHDAY, staff.getBirthday());
         contentValues.put(DatabaseConstants.STAFF_DEPARTMENT, staff.getDepartmentId());
@@ -55,6 +56,35 @@ public class StaffDao extends DbContentProvider {
         int rowsAffected = database.update(DatabaseConstants.TABLE_STAFF, contentValues
                 , DatabaseConstants.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
         return rowsAffected > 0;
+    }
+
+    public Cursor searchStaff(String condition) {
+        String selection = DatabaseConstants.STAFF_NAME + " LIKE '%" + condition + "%'"
+                + " OR " + DatabaseConstants.STAFF_PHONE + " LIKE '%" + condition + "%'";
+        Cursor cursor = database.query(true, DatabaseConstants.TABLE_STAFF,
+                null, selection, null, null, null, null, null);
+        // we first search in table Staff to check if there is any record that
+        // has the name and phone in the query
+        if (cursor != null && cursor.getCount() > 0) {
+            return cursor;
+        } else {
+            // no Staff who has name or phone matched the query, so we search
+            // for the department name.
+            if (getStaffListByDepartmentName(condition) != null) {
+                return getStaffListByDepartmentName(condition);
+            }
+            return cursor;
+        }
+    }
+
+    public Cursor getStaffListByDepartmentName(String name) {
+        String innerJoin = DatabaseConstants.TABLE_STAFF + " INNER JOIN " + DatabaseConstants.TABLE_DEPARTMENT
+                + " ON " + DatabaseConstants.TABLE_STAFF + "." + DatabaseConstants.STAFF_DEPARTMENT + " = "
+                + DatabaseConstants.TABLE_DEPARTMENT + "." + DatabaseConstants.COLUMN_ID;
+        String where = DatabaseConstants.TABLE_DEPARTMENT + "." + DatabaseConstants.DEPARTMENT_NAME + " LIKE '%" + name + "%'";
+        Cursor cursor = database.query(innerJoin,
+                null, where, null, null, null, null, null);
+        return cursor;
     }
 
     public Staff getStaff(int id) {
@@ -75,17 +105,17 @@ public class StaffDao extends DbContentProvider {
         List<Staff> list = new ArrayList<>();
         String selection = DatabaseConstants.STAFF_DEPARTMENT + " = ?";
         String[] selectionArgs = {String.valueOf(departmentId)};
-        String paginationQuery =  "order by id asc limit 30 offset " + offset;
+        String orderQuery = "_id asc";
+        String paginationQuery = offset + ",30";
         Cursor cursor = database.query(DatabaseConstants.TABLE_STAFF,
-                null, selection, selectionArgs, null, null, null, paginationQuery);
-        if (cursor.getCount() > 0) {
+                null, selection, selectionArgs, null, null, orderQuery, paginationQuery);
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 list.add(new Staff(cursor));
             }
             cursor.close();
             return list;
         }
-        cursor.close();
         return null;
     }
 }

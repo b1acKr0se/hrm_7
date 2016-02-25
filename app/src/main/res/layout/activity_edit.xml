@@ -28,14 +28,6 @@
                 android:hint="@string/label_name" />
 
             <EditText
-                android:id="@+id/edit_dob"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/default_padding_16dp"
-                android:background="@null"
-                android:hint="@string/label_birthday" />
-
-            <EditText
                 android:id="@+id/edit_pob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,13 +49,47 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/default_padding_16dp"
                 android:paddingStart="@dimen/default_padding_16dp"
+                android:paddingTop="@dimen/default_padding_8dp"
+                android:text="@string/label_birthday" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/default_padding_8dp">
+
+                <TextView
+                    android:id="@+id/text_staff_birthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/default_padding_16dp"
+                    android:paddingStart="@dimen/default_padding_16dp"
+                    android:textColor="@android:color/black"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/text_change_birthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/default_padding_16dp"
+                    android:text="@string/change_date"
+                    android:textColor="@color/colorAccent" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/default_padding_16dp"
+                android:paddingStart="@dimen/default_padding_16dp"
+                android:paddingTop="@dimen/default_padding_8dp"
                 android:text="@string/label_department" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/default_padding_8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/default_padding_8dp">
 
                 <TextView
                     android:id="@+id/text_department_name"

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.R;
 import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.data.model.Staff;
+import com.framgia.nguyenthanhhai.humanresourcemanagementsystem.ui.listener.OnEditClickListener;
 
 /**
  * Dialog that shows staff information
@@ -25,6 +26,8 @@ public class StaffDetailDialog extends Dialog implements View.OnClickListener {
     private TextView mStaffStatusTextView;
     private TextView mStaffPositionTextView;
     private Button mOkButton;
+    private Button mEditButton;
+    private OnEditClickListener mOnEditClickListener;
 
     public StaffDetailDialog(Context context) {
         super(context);
@@ -42,6 +45,10 @@ public class StaffDetailDialog extends Dialog implements View.OnClickListener {
         super(context);
         this.mStaff = staff;
         this.mDepartmentName = departmentName;
+    }
+
+    public void setOnEditListener(OnEditClickListener onEditListener) {
+        mOnEditClickListener = onEditListener;
     }
 
     @Override
@@ -62,6 +69,7 @@ public class StaffDetailDialog extends Dialog implements View.OnClickListener {
         mStaffStatusTextView = (TextView) findViewById(R.id.text_staff_status);
         mStaffPositionTextView = (TextView) findViewById(R.id.text_staff_position);
         mOkButton = (Button) findViewById(R.id.btn_ok);
+        mEditButton = (Button) findViewById(R.id.btn_edit);
     }
 
     private void setDetail() {
@@ -73,10 +81,20 @@ public class StaffDetailDialog extends Dialog implements View.OnClickListener {
         mStaffPositionTextView.setText(mStaff.getPosition().toString());
         mStaffStatusTextView.setText(mStaff.getStatus().toString());
         mOkButton.setOnClickListener(this);
+        mEditButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        dismiss();
+        switch (v.getId()) {
+            case R.id.btn_ok:
+                dismiss();
+                break;
+            case R.id.btn_edit:
+                dismiss();
+                mOnEditClickListener.onEditClick(mStaff);
+                break;
+        }
+
     }
 }
